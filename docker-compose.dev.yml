@@ -1,0 +1,23 @@
+version: "3.2"
+
+services:
+  app:
+    build:
+      context: .
+      cache_from:
+        - malteos/receval:latest
+    image: malteos/receval:${RECEVAL_TAG:-latest}
+    ports:
+      - "8000:8000"
+    restart: on-failure
+    tmpfs: /tmp
+    volumes:
+      - ".:/app"
+      - "/:/host"
+      #- "db.sqlite3:/app/db.sqlite3"
+    environment:
+      DJANGO_CONFIGURATION: Dev
+      DJANGO_DEBUG: 'true'
+      DATABASE_URL: 'sqlite:///db.sqlite3'
+#    env_file:
+#      - receval.env

@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+
+{% load static %}
+{% load string_filters %}
+{% block content %}
+
+{#    Select experiment: {{ experiment.name }}#}
+{#    <hr>#}
+
+    {% if seed %}
+
+        <article>
+            <div class="author">
+                <a href="{{ experiment.base_url }}/authors/?q=ai%3A{{ seed.data.author }}" title="" data-original-title="Author Profile">{{ seed.data.author }}</a></div>
+
+            <div class="title">{{ seed.data.title }}
+                <i>({{ seed.data.language }})</i>
+                <a class="label" href="{{ experiment.base_url }}/?q=an%3A{{ seed.data.zbl_id }}" data-original-title="" title="">Zbl&nbsp;{{ seed.data.zbl_id }}</a>
+            </div>
+            <div class="source">
+
+
+                <a href="{{ experiment.base_url }}" title="" data-original-title="Journal Profile">{{ seed.data.source }}</a>
+
+            </div>
+            <div class="abstract">{{ seed.data.text }}
+            </div>
+            <div class="clear"></div>
+            <div class="classification">
+                <h5>MSC:</h5>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <a class="mono" href="{{ experiment.base_url }}/classification/?q=cc%3{{ seed.data.classification }}" title="" data-original-title="MSC2020">{{ seed.data.classification }}</a>
+                        </td>
+                        <td class="space">
+
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="functions clearfix">
+                <div class="sfx" style="float: right;">
+                </div>
+            </div>
+
+        </article>
+
+        <div>
+            <h2>Recommendations</h2>
+                    {% if not recommendations %}
+                        <div class="alert alert-warning">No recommendations available for the selected item.
+                            Click <a href="{% url 'recommendations' %}">here</a> for a random seed item.</div>
+                {% endif %}
+        <div class="similar-papers__body flex-container">
+
+            {% for rec in recommendations %}
+                {%  with feedback=feedbacks_by_recommendation|get_item:rec.pk data=rec.recommended_item.data %}
+                <div class="flex-item similar-papers__card" id="recommendation{{ rec.pk }}">
+                    <div class="similar-papers-card__fold"></div>
+                    <div class="similar-papers__metadata-top">
+                        <ul class="similar-papers__metadata-top__list">
+                            <li>Published {{ seed.data.year }} in <span class="" data-selenium-selector="venue-metadata"><span>{{ rec.recommended_item.data.source }}</span></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="similar_papers__link">
+                        <a data-selenium-selector="title-link" href="{{ experiment.base_url }}/?q=an%3A{{ data.zbl_id }}">
+                            {{ rec.recommended_item.data.title }}
+                        </a></div>
+                    <div class="similar-papers__metadata">
+                        <span class="author-list">
+                            <span data-heap-id="" data-heap-author-id="">
+                                <a
+                            class="author-list__link author-list__author-name"
+                            href="#"><span class=""><span>{{ rec.recommended_item.data.author }}</span></span></a>
+
+                            </span>
+
+                        </span>
+                    </div>
+                    <div class="similar-papers__abstract">{{ rec.recommended_item.data.text|truncatewords:25 }}
+                    </div>
+                    <div class="similar-papers__footer"><span class="similar-papers__footer-left"><span
+                            class="similar-papers__footer-text">
+                            {% if rec.recommended_item.data.citation_count %}
+                                <span class="similar-papers__footer-counts">{{ rec.recommended_item.data.citation_count }}</span> Citations
+                            {% else %}
+                                No citation data available.
+                            {% endif %}
+                            </span>
+                        </span>
+                        <div class="similar-papers__footer-right">
+                            <form class="rating-form" method="post" action="/feedback/rating" style="padding: 3px;">
+                                {% csrf_token %}
+                                <input type="hidden" name="recommendation_pk" value="{{ rec.pk }}">
+                                <input type="hidden" name="is_relevant" value="{{ feedback.is_relevant }}">
+
+                                <button type="button" onclick="$('#recommendation{{ rec.pk }} input[name=is_relevant]').val('1'); $('#recommendation{{ rec.pk }} .rating-form').submit();" class="btn btn-xs btn-success" {% if feedback.is_relevant %}style="font-weight: bold; text-decoration: underline"{% endif %}>
+                                    <i class="fa fa-thumbs-up"></i> Relevant
+                                </button>
+                                <button type="button" onclick="$('#recommendation{{ rec.pk }} input[name=is_relevant]').val('0'); $('#recommendation{{ rec.pk }} .rating-form').submit();" class="btn btn-xs btn-danger" {% if feedback.is_relevant == False %}style="font-weight: bold; text-decoration: underline"{% endif %}>
+                                    <i class="fa fa-thumbs-down"></i> Not Relevant
+                                </button>
+
+                                <button type="button" class="btn btn-xs btn-primary" onclick="$('#recommendation{{ rec.pk }} .comment-form').toggle();">Comment</button>
+                            </form>
+
+{#                            <button class="icon-button similar-papers__metadata-save"#}
+{#                                    data-selenium-selector="paper-action-save"><span class="flex-row-centered"><svg#}
+{#                                    width="18" height="18" class="icon-svg icon-fa-bookmark-not-filled"#}
+{#                                    data-selenium-selector="icon-fa-bookmark-not-filled"><use#}
+{#                                    ></use></svg><span#}
+{#                                    class="icon-button-text">Save</span></span></button>#}
+                        </div>
+
+                    </div>
+                        <div>
+
+                            <form class="comment-form" method="post" action="/feedback/comment" style="display: none">
+                                {% csrf_token %}
+                                <input type="hidden" name="recommendation_pk" value="{{ rec.pk }}">
+
+                                <hr>
+                                <div class="form-group">
+
+                                    <textarea class="form-control" name="comment" placeholder="Enter your feedback">{{ feedback.comment }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-default" type="submit"><i class="fa fa-save"></i> Save Comment</button>
+                                </div>
+
+                            </form>
+                        </div>
+                </div>
+                {% endwith %}
+            {% endfor %}
+
+        </div>
+        </div>
+
+    {% else %}
+
+        <div class="alert alert-warning">No seed available.</div>
+
+    {% endif %}
+
+
+
+{% endblock %}

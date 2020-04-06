@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% load static %}
+{% load string_filters %}
+{% block content %}
+
+    <h2>My Feedback</h2>
+
+    <table class="table table-striped table-hover">
+
+    <thead>
+        <tr>
+            <th>Seed</th>
+            <th>Recommendation</th>
+            <th>Relevant?</th>
+            <th>Comment</th>
+            <th>Last update</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for feedback in feedbacks %}
+        <tr>
+            <td><a href="{{ feedback.recommendation.seed_item.get_absolute_url }}">{{ feedback.recommendation.seed_item.get_title }}</a></td>
+            <td>{{ feedback.recommendation.recommended_item.get_title }} (#{{ feedback.recommendation.rank }})</td>
+            <td class="text-center">{% if feedback.is_relevant %}<i class="fa fa-check"></i>{% endif %}</td>
+            <td>{{ feedback.comment }}</td>
+            <td>{{ feedback.updated_date }}</td>
+
+        </tr>
+    {% endfor %}
+    </tbody>
+
+    </table>
+
+
+{% endblock %}

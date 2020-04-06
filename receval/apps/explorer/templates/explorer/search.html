@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% load static %}
+{% load string_filters %}
+{% block content %}
+
+    <h2>Select seed item</h2>
+
+    <p>Items based on <i>{{ searchQuery }}</i> search:</p>
+    <ul>
+        {% for item in items %}
+            <li><a href="{{ item.get_absolute_url }}">{{ item.get_title }}</a></li>
+        {% endfor %}
+        {% if not items %}
+            <li>no matching item found</li>
+        {% endif %}
+    </ul>
+
+
+    <p>Some random items:</p>
+    <ul>
+        {% for item in random_items %}
+            <li><a href="{{ item.get_absolute_url }}">{{ item.get_title }}</a></li>
+        {% endfor %}
+    </ul>
+
+
+{%  endblock %}

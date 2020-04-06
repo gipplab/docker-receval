@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+
+{% load static %}
+
+{% block content %}
+
+{% if seeds %}
+<section>
+
+    {% for seed in seeds %}
+        {% if forloop.counter > 1 %}
+            &nbsp; <a class="btn btn-default btn-sm" href="?query={{ seed.title }}">{{ seed.title }}</a>
+        {% else %}
+            <h2>Seed: <a href="https://{{ wiki }}/?curid={{ seed.pageid }}" target="_blank">{{ seed.title }}</a></h2>
+            <p>{{ seed.snippet|safe }}</p>
+            <p>
+                <span class="btn btn-default">Words: {{ seed.wordcount }} </span>
+                <a class="btn btn-default" target="_blank" href="https://tools.wmflabs.org/pageviews/?project={{ wiki }}&platform=all-access&agent=user&start=2016-11&end=2017-10&pages={{ seed.title }}">
+                    Page views
+                </a>
+            </p>
+            <p><strong>Other articles:</strong></p>
+        {% endif %}
+
+    {% endfor %}
+
+</section>
+{% else %}
+    <br>
+    <div class="alert alert-danger">No seed article selected. Use search form to find seed article.</div>
+{% endif %}
+
+{% if error %}
+    <div class="alert alert-danger"><strong>ERROR</strong> {{ error }}</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-lg-4">
+        <section>
+
+            <h3>Citolytics</h3>
+            {% if cpa %}
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th class="text-center">#</th>
+                    <th>Recommendation</th>
+                    <th class="text-right">Score</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for rec in cpa.get_recommendations %}
+                <tr>
+                    <td class="text-center">{{ forloop.counter }}</td>
+                    <td><a href="https://{{ wiki }}/wiki/{{ rec.title }}">{{ rec.title }}</a></td>
+                    <td class="text-right">{{ rec.score|floatformat:3 }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </section>
+        {% if not cpa %}
+        <div class="alert alert-warning">
+            No recommendations available.
+        </div>
+        {% endif %}
+    </div>
+    <div class="col-lg-4">
+
+        <section>
+            <h3>Popular MLT</h3>
+            {% if mlt_popular %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th class="text-center">#</th>
+                    <th>Recommendation</th>
+                    <th class="text-right">Score</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for rec in mlt_popular.get_recommendations %}
+                <tr>
+                    <td class="text-center">{{ forloop.counter }}</td>
+                    <td><a href="https://{{ wiki }}/wiki/{{ rec.title }}">{{ rec.title }}</a></td>
+                    <td class="text-right">{{ rec.score|floatformat:3 }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+
+        </section>
+        {% if not mlt_popular %}
+        <div class="alert alert-warning">
+            No recommendations available.
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-4">
+
+        <section>
+            <h3>Plain MLT</h3>
+            {% if mlt_plain %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th class="text-center">#</th>
+                    <th>Recommendation</th>
+                    <th class="text-right">Score</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for rec in mlt_plain.get_recommendations %}
+                <tr>
+                    <td class="text-center">{{ forloop.counter }}</td>
+                    <td><a href="https://{{ wiki }}/wiki/{{ rec.title }}">{{ rec.title }}</a></td>
+                    <td class="text-right">{{ rec.score|floatformat:3 }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+
+        </section>
+        {% if not mlt_plain %}
+        <div class="alert alert-warning">
+            No recommendations available.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}

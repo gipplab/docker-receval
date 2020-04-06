@@ -1,0 +1,22 @@
+{% extends 'account/base.html' %}
+
+{% load i18n %}
+{% load bootstrap %}
+
+{% block head_title %}{% trans "API Keys" %}{% endblock %}
+
+{% block account_nav_api %}active{% endblock %}
+
+{% block account_content %}
+
+<p>{% trans 'You can access our API with the following access token:' %}</p>
+<p class="text-center">
+
+    <input type="text" class="form-control form-control-lg text-center" readonly onclick="this.select();" value="{{ token }}">
+
+</p>
+{#<p>#}
+{#    <a class="btn btn-primary" href="{% url 'account_api_renew' %}">{% trans 'Renew Token' %}</a>#}
+{#</p>#}
+
+{% endblock %}

@@ -1,0 +1,3 @@
+class BaseExperiment(object):
+    pass
+

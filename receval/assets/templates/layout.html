@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+{#    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">#}
+{#    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">#}
+
+    <link rel="canonical" href="{{ canonical }}">
+
+    <title>{{ title }} - {{ site.title }}</title>
+
+    <link href="{% static 'css/bootstrap.3.3.7.min.css' %}" rel="stylesheet">
+{#    <link href="{% static 'css/bootstrap/theme.3.3.7.min.css' %}" rel="stylesheet">#}
+
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/font-roboto.css' %}" rel="stylesheet">
+{#    <link href="{% static 'css/style.css' %}" rel="stylesheet">#}
+    <link href="{% static 'css/zbmath.css' %}" rel="stylesheet">
+    <script src="{% static 'js/jquery/2.1.4.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap/3.3.7.min.js' %}"></script>
+    <script src="{% static 'js/global.js' %}"></script>
+
+
+    {% block headLibs %}{% endblock %}
+</head>
+
+<body class="home">
+
+
+<header class="header fixed">
+        {%  include 'navbar.html' %}
+
+{#        <nav class="navbar">#}
+{#            <div style="margin: 0 auto;">#}
+{#                <div class="navbar-header hidden-sm hidden-xs">#}
+{#                    <!--<button class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">-->#}
+{#                        <!--<span class="sr-only">Toggle navigation</span>-->#}
+{#                        <!--<span class="icon-bar"></span>-->#}
+{#                        <!--<span class="icon-bar"></span>-->#}
+{#                        <!--<span class="icon-bar"></span>-->#}
+{##}
+{#                    <!--</button>-->#}
+{#                    <a href="/" class="navbar-brand">#}
+{#                        <i class="fa fa-check-square-o" aria-hidden="true"></i>#}
+{#                        Recommender Evaluation#}
+{#                    </a>#}
+{#                </div>#}
+{#                <!--<div id="navbar" class="navbar-collapse collapse">-->#}
+{#                <div id="navbar">#}
+{##}
+{#                    <form class="search-form navbar-form navbar-left" action="/" role="search" method="get">#}
+{#                        <div class="form-group">#}
+{#                            <a href="/"  class="visible-sm visible-xs" style="float: left; font-size: 25px; padding-right: 5px;">#}
+{#                                <i class="fa fa-check-square-o" aria-hidden="true"></i>#}
+{#                            </a>#}
+{##}
+{#                            <input class="input-large form-control" name="query" placeholder="Wikipedia article" type="search" value="{{ searchQuery }}">#}
+{#                            <button class="btn btn-primary">#}
+{#                                <i class="fa fa-search" aria-hidden="true"></i>#}
+{#                            </button>#}
+{#                        </div>#}
+{#                    </form>#}
+{##}
+{#                </div>#}
+{#            </div>#}
+{#        </nav>#}
+</header>
+
+<div class="wrap">
+    <div class="container">
+        <div class="content">
+            {% include 'messages.html' %}
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <div class="container">
+        <div class="row text-muted">
+            <hr>
+            Recommender System Evaluation
+        </div>
+    </div>
+</footer>
+
+</body>
