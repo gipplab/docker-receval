@@ -40,13 +40,7 @@ class Base(Configuration):
     # SECURITY WARNING: keep the secret key used in production secret!
     SECRET_KEY = '__!7o-w9_5cyix-n%m-asg4=rtpcwh6rkoe6!d&yz2q%1y&fk5'
 
-    ALLOWED_HOSTS = [
-        '127.0.0.1',
-        'localhost',
-        'mieo.de',
-        'receval.appserver24.com'
-    ]
-
+    ALLOWED_HOSTS = values.ListValue(['*'])
 
     # Application definition
 
@@ -319,3 +313,4 @@ class Prod(Base):
 
     # Set like this: DJANGO_ADMINS=Foo,foo@site.com;Bar,bar@site.com
     ADMINS = values.SingleNestedTupleValue()
+

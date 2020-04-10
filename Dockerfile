@@ -5,12 +5,14 @@ FROM python:3.7
 RUN mkdir /app
 WORKDIR /app
 
-# copy our project code
-COPY . /app
-
+# copy req file first
+COPY requirements.txt /app/requirements.txt
 
 # install our dependencies
 RUN pip install -r requirements.txt
+
+# copy all other project code
+COPY . /app
 
 ENV DJANGO_SETTINGS_MODULE=receval.settings
 ENV DJANGO_CONFIGURATION=Prod

@@ -5,8 +5,8 @@ services:
     build:
       context: .
       cache_from:
-        - malteos/receval:latest
-    image: malteos/receval:${RECEVAL_TAG:-latest}
+        - aggipp/receval:latest
+    image: aggipp/receval:${RECEVAL_TAG:-latest}
     ports:
       - "8000:8000"
     restart: on-failure

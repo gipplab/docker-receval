@@ -1,6 +1,8 @@
 # RecEval
 
-A front end for browsing recommendation sets generated for various research projects.
+A front end for browsing recommendation sets generated for various research projects. 
+The web app is based on [Django](https://docs.djangoproject.com) and available as
+[Docker image](https://hub.docker.com/r/aggipp/receval/).
 
 ## Install
 
@@ -58,7 +60,7 @@ ZBMATH_SSL_ROOTCERT="~/.postgresql/root.crt"
 
 ```bash
 # Pull image
-docker pull malteos/receval:latest
+docker pull aggipp/receval:latest
 
 # Build image from repo
 docker build -t receval .
@@ -67,10 +69,10 @@ docker build -t receval .
 docker run receval python manage.py test
 
 # Tag image for hub
-docker tag receval malteos/receval:latest  
+docker tag receval aggipp/receval:latest  
 
 # Push to hub
-docker push malteos/receval:latest
+docker push aggipp/receval:latest
 ```
 
 For development, running `docker-compose` is recommended:
@@ -81,6 +83,14 @@ docker-compose -f docker-compose.dev.yml up
 # init database and load dummy data
 docker-compose -f docker-compose.dev.yml exec app python manage.py migrate
 docker-compose -f docker-compose.dev.yml exec app python manage.py loaddata dummy.json
+```
+
+## Export feedback
+
+You can export all collected user feedback as CSV file:
+
+```bash
+python manage.py export_feedback --experiment <name> --output <my_output.csv> --override
 ```
 
 ## zbMATH

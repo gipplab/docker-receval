@@ -2,11 +2,11 @@ version: "3.2"
 
 services:
   receval_app:
-    image: malteos/receval:${RECEVAL_TAG:-latest}
+    image: aggipp/receval:${RECEVAL_TAG:-latest}
     ports:
       - "8000:8000"
     restart: on-failure
     environment:
       DJANGO_CONFIGURATION: Prod
       DJANGO_SECRET_KEY: YourSecretKey
-      DATABASE_URL: 'postgresql+psycopg2://postgres:postgres@localhost/postgres'
+      DATABASE_URL: 'postgresql://postgres:postgres@localhost/postgres'

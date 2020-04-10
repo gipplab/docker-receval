@@ -26,5 +26,5 @@ def global_context_processor(request):
         # 'canonical': '',
         # 'nav': '',
         'searchQuery': request.GET.get('q') if 'q' in request.GET else '',
-        'user': request.user
+        'user': request.user if hasattr(request, 'user') else None,
     }
