@@ -65,6 +65,9 @@ docker pull aggipp/receval:latest
 # Build image from repo
 docker build -t receval .
 
+# Run web server on port 8000
+docker run -p 8000:8000 receval
+
 # Run unit tests within image
 docker run receval python manage.py test
 
