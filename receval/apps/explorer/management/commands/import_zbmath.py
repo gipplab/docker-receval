@@ -3,7 +3,7 @@ import os
 
 import pandas as pd
 from django.core.management import BaseCommand
-from django.db import IntegrityError
+from django.db import IntegrityError, DatabaseError
 from tqdm import tqdm
 
 from receval.apps.explorer.experiments.zbmath import ZbMath
@@ -97,14 +97,19 @@ class Command(BaseCommand):
                     item = Item(experiment=exp, external_id=data['zbl_id'], data=data)
 
                     if 'title' in data:
-                        item.title = data['title']
+                        # Ensure that title has correct length
+                        item.title = data['title'][:Item._meta.get_field('title').max_length-1]
 
-                    item.save()
+                    try:
+                        item.save()
 
-                    doc_id2item_id[doc_id] = item.pk
-                except IntegrityError as e:
-                    logger.error(f'Cannot add item (integrity error): {e}')
-                    items_skipped += 1
+                        doc_id2item_id[doc_id] = item.pk
+                    except IntegrityError as e:
+                        logger.error(f'Cannot add item (integrity error): {e}; {item}')
+                        items_skipped += 1
+                    except DatabaseError as e:
+                        logger.error(f'Cannot add item (database error): {e}; {item}')
+                        items_skipped += 1
                 except ValueError as e:
                     logger.error(f'Cannot add item: {e}')
                     items_skipped += 1
@@ -114,17 +119,20 @@ class Command(BaseCommand):
 
             for idx, row in tqdm(df.iterrows(), total=len(df)):
                 if row['seed_id'] in doc_id2item_id and row['recommendation_id'] in doc_id2item_id:
+                    rec = Recommendation(
+                        experiment=exp,
+                        seed_item_id=doc_id2item_id[row['seed_id']],
+                        recommended_item_id=doc_id2item_id[row['recommendation_id']],
+                        rank=row['rank'],
+                        score=row['score']
+                    )
                     try:
-                        rec = Recommendation(
-                            experiment=exp,
-                            seed_item_id=doc_id2item_id[row['seed_id']],
-                            recommended_item_id=doc_id2item_id[row['recommendation_id']],
-                            rank=row['rank'],
-                            score=row['score']
-                        )
                         rec.save()
                     except IntegrityError as e:
-                        logger.error(f'Cannot add recommendation (integrity error): {e}')
+                        logger.error(f'Cannot add recommendation (integrity error): {e}; {rec}')
+                        items_skipped += 1
+                    except DatabaseError as e:
+                        logger.error(f'Cannot add recommendation (database error): {e}; {rec}')
                         items_skipped += 1
                 else:
                     recs_skipped += 1
