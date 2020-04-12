@@ -4,12 +4,12 @@ import re
 
 import requests
 from django.conf import settings
-from django.urls import reverse
-from requests.exceptions import ConnectionError
-from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
+from requests.exceptions import ConnectionError
 
 # Create your views here.
 from receval.apps.explorer.models import RecommendationSet, Item, Experiment, Recommendation, Feedback
@@ -136,6 +136,14 @@ def old_index(request):
 
 
 @login_required
+def view_feedback_delete(request, feedback_id):
+    feedback = get_object_or_404(Feedback, pk=feedback_id, author=request.user)
+    feedback.delete()
+
+    return redirect(reverse('feedback'))
+
+
+@login_required
 def view_feedback_rating(request):
     rec = get_object_or_404(Recommendation, pk=request.POST.get('recommendation_pk'))
 
@@ -149,6 +157,7 @@ def view_feedback_rating(request):
     messages.success(request, _('Your feedback has been saved. Thank you!'))
 
     return redirect(reverse('recommendations') + '?seed_pk=%s' % rec.seed_item.pk)
+
 
 @login_required
 def view_feedback_comment(request):
@@ -250,13 +259,13 @@ def view_search(request):
 
         else:
             # keyword search
-            items = Item.objects.filter(title__contains=q)[:100]
+            items = Item.objects.filter(title__contains=q, seed_item__isnull=False).distinct()[:100]
 
     else:
         items = []
 
     # Random items
-    random_items = Item.objects.filter(recommended_item__seed_item__isnull=False).order_by('?')[:100]
+    random_items = Item.objects.filter(seed_item__isnull=False).select_related('experiment').order_by('?').distinct()[:100]
 
     return render(request, 'explorer/search.html', {
         'title': 'Search',

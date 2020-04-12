@@ -25,7 +25,7 @@ class Command(BaseCommand):
     help = 'Import zbMATH data'
 
     def add_arguments(self, parser):
-        parser.add_argument('--input', type=str, required=True, help='Path to CSV or "dummy" for example data')
+        parser.add_argument('input', type=str, help='Path to CSV or "dummy" for example data')
         parser.add_argument('--limit', type=int, default=0, help='Limit number of rows to be imported')
         parser.add_argument('--empty', action='store_true', default=False, help='Empty existing index')
         parser.add_argument('--lipsum', action='store_true', default=False, help='Use `Lorem ipsum` as dummy body text')
@@ -94,7 +94,12 @@ class Command(BaseCommand):
                     if options['lipsum']:
                         data['text'] = LIPSUM_TEXT
 
-                    item = Item(experiment=exp, external_id=data['zbl_id'], data=data)
+                    external_id = data['zbl_id']
+
+                    if not external_id:
+                        raise ValueError(f'External ID not set for doc #{doc_id}')
+
+                    item = Item(experiment=exp, external_id=external_id, data=data)
 
                     if 'title' in data:
                         # Ensure that title has correct length
@@ -137,6 +142,6 @@ class Command(BaseCommand):
                 else:
                     recs_skipped += 1
 
-            logger.info(f'Items skipped: {items_skipped}; Recommendations skipped: {recs_skipped}')
+            logger.info(f'Items skipped: {items_skipped}/{len(unique_item_ids)}; Recommendations skipped: {recs_skipped}/{len(df)}')
 
         logger.info('Done.')

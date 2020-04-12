@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^feedback$', views.view_feedback, name='feedback'),
     url(r'^feedback/rating$', views.view_feedback_rating, name='feedback_rating'),
     url(r'^feedback/comment$', views.view_feedback_comment, name='feedback_comment'),
+    url(r'^feedback/delete/(?P<feedback_id>[0-9]+)$', views.view_feedback_delete, name='feedback_delete'),
 
     # url(r'^imprint$', views.imprint, name='imprint'),
     # url(r'^api', views.api, name='api'),
