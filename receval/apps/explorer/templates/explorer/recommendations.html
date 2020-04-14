@@ -11,14 +11,20 @@
 
         <article>
             <div class="author">
-                <a href="{{ experiment.base_url }}/authors/?q=ai%3A{{ seed.data.author }}" title="" data-original-title="Author Profile">{{ seed.data.author }}</a></div>
+                {%  with authors=seed.data.author|split:";" %}
+                    {% for a in authors %}
+                        <a href="{{ experiment.base_url }}/authors/?q={{ a }}" title="" data-original-title="Author Profile">{{ a }}</a>,
+                    {% endfor %}
+                {% endwith %}
+
+            </div>
 
             <div class="title">{{ seed.data.title }}
                 <i>({{ seed.data.language }})</i>
                 <a class="label" href="{{ experiment.base_url }}/?q=an%3A{{ seed.data.zbl_id }}" data-original-title="" title="">Zbl&nbsp;{{ seed.data.zbl_id }}</a>
             </div>
             <div class="source">
-                <a href="#" title="" data-original-title="Journal Profile">{{ seed.data.source }}</a>
+                <span title="" data-original-title="Journal Profile">{{ seed.data.source }}</span>
             </div>
             <div class="abstract">{{ seed.data.text }}
             </div>
@@ -72,13 +78,16 @@
                         </a></div>
                     <div class="similar-papers__metadata">
                         <span class="author-list">
-                            <span data-heap-id="" data-heap-author-id="">
-                                <a
-                            class="author-list__link author-list__author-name"
-                            href="#"><span class=""><span>{{ rec.recommended_item.data.author }}</span></span></a>
+                            {%  with authors=rec.recommended_item.data.author|split:";" %}
+                                {% for a in authors %}
+                                    <span data-heap-id="" data-heap-author-id="">
+                                        <a
+                                    class="author-list__link author-list__author-name"
+                                    href="{{ experiment.base_url }}/authors/?q={{ a }}"><span class=""><span>{{ a }}</span></span></a>,
 
-                            </span>
-
+                                    </span>
+                                {% endfor %}
+                            {% endwith %}
                         </span>
                     </div>
                     <div class="similar-papers__abstract">{{ rec.recommended_item.data.text|truncatewords:25 }}
