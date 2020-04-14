@@ -93,14 +93,14 @@ docker-compose -f docker-compose.dev.yml exec app python manage.py loaddata dumm
 You can export all collected user feedback as CSV file:
 
 ```bash
-python manage.py export_feedback --experiment <name> --output <my_output.csv> --override
+python manage.py export_feedback <name> <my_output.csv> --override
 ```
 
 ## zbMATH
 
 ```bash
 # Import recommendations (and override existing ones)
-python manage.py import_zbmath --input data/zbmath_recommendations.csv --empty
+python manage.py import_zbmath data/zbmath_recommendations.csv --empty
 ```
 
 ## Setup SSH Tunnel to WMF Labs

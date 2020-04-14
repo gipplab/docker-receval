@@ -29,6 +29,7 @@ class Command(BaseCommand):
         parser.add_argument('--limit', type=int, default=0, help='Limit number of rows to be imported')
         parser.add_argument('--empty', action='store_true', default=False, help='Empty existing index')
         parser.add_argument('--lipsum', action='store_true', default=False, help='Use `Lorem ipsum` as dummy body text')
+        parser.add_argument('--top-k', type=int, default=10, help='Import only the top-k recommendations')
 
     def handle(self, *args, **options):
         exp = Experiment.objects.get(name='zbmath')
@@ -123,7 +124,9 @@ class Command(BaseCommand):
             logger.info(f'Adding {len(df)} recommendations to db')
 
             for idx, row in tqdm(df.iterrows(), total=len(df)):
-                if row['seed_id'] in doc_id2item_id and row['recommendation_id'] in doc_id2item_id:
+                if row['seed_id'] in doc_id2item_id and row['recommendation_id'] in doc_id2item_id \
+                        and (row['rank'] <= options['top_k'] or options['top_k'] == 0):
+
                     rec = Recommendation(
                         experiment=exp,
                         seed_item_id=doc_id2item_id[row['seed_id']],

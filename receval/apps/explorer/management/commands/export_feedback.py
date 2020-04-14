@@ -1,15 +1,10 @@
-import csv
-import json
 import logging
 import os
-import re
+
 import pandas as pd
-
 from django.core.management import BaseCommand
-from tqdm import tqdm
 
-from receval.apps.explorer.experiments.zbmath import ZbMath
-from receval.apps.explorer.models import Experiment, Item, Recommendation, Feedback
+from receval.apps.explorer.models import Experiment, Feedback
 
 logger = logging.getLogger(__name__)
 
@@ -18,14 +13,15 @@ class Command(BaseCommand):
     help = 'Export feedback data'
 
     def add_arguments(self, parser):
-        parser.add_argument('--experiment', type=str, required=True, help='Name of experiment')
-        parser.add_argument('--output', type=str, required=True, help='Write output CSV to this path')
+        parser.add_argument('experiment', type=str, help='Name of experiment')
+        parser.add_argument('output', type=str, help='Write output CSV to this path')
         parser.add_argument('--limit', type=int, default=0, help='Limit number of rows to be exported')
         parser.add_argument('--override', action='store_true', default=False, help='Override if a file exists already at output path')
 
     def handle(self, *args, **options):
-        # exp = Experiment.objects.get(name=options['experiment'])
-        exp = Experiment.objects.get(name='zbmath')
+
+        exp = Experiment.objects.get(name=options['experiment'])
+        # exp = Experiment.objects.get(name='zbmath')
 
         if not options['override'] and os.path.exists(options['output']):
             raise ValueError('Output path exists already')
@@ -64,6 +60,6 @@ class Command(BaseCommand):
         if options['limit'] > 0:
             df = df[:options['limit']].copy()
 
-        df.to_csv(options['output'])
+        df.to_csv(options['output'], index=False)
 
-        logger.info(f'Exported: {len(df)} rows')
+        logger.info(f'Exported: {len(df)} rows to {options["output"]}')

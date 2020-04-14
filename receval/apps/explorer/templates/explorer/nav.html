@@ -1,0 +1,22 @@
+
+    <div class="text-center">
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+              {% if prev_seed %}
+                <li>
+                  <a href="{{ prev_seed.get_absolute_url }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span> {{ prev_seed.title|truncatewords:10 }}
+                  </a>
+                </li>
+              {% endif %}
+              <li><a href="/">Other items</a></li>
+              {% if next_seed %}
+                <li>
+                  <a href="{{ next_seed.get_absolute_url }}" aria-label="Next">
+                    {{ next_seed.title|truncatewords:10 }} <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              {% endif %}
+          </ul>
+        </nav>
+    </div>

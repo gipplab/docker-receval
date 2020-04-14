@@ -1,5 +1,6 @@
 import json
 import logging
+import math
 import re
 
 import requests
@@ -235,12 +236,36 @@ def view_recommendations(request):
 
     # Recommendation().feedback_set.get(author=request.user)
 
+    # Previous <-> Next seeds
+    prev_seeds = Item.objects.filter(experiment=exp, seed_item__isnull=False, id__lt=seed_item.id).order_by('-seed_item')[:1]
+    prev_seed = prev_seeds[0] if prev_seeds else None
+
+    next_seeds = Item.objects.filter(experiment=exp, seed_item__isnull=False, id__gt=seed_item.id).order_by('seed_item')[:1]
+    next_seed = next_seeds[0] if next_seeds else None
+
+    # Progress
+    if request.user.is_authenticated:
+        # total recommendations
+        recommendations_count = Recommendation.objects.filter(experiment=exp).count()
+        feedbacks_count = Feedback.objects.filter(recommendation__experiment=exp, author=request.user).count()
+
+        progress = min(100, math.ceil(100 * (feedbacks_count / recommendations_count)))
+    else:
+        progress = None
+        recommendations_count = 0
+        feedbacks_count = 0
+
     return render(request, 'explorer/recommendations.html', {
         'title': '%s - Explorer' % seed_item.title,
         'experiment': exp,
         'seed': seed_item,
         'recommendations': recs,
         'feedbacks_by_recommendation': feedbacks_by_recommendation,
+        'prev_seed': prev_seed,
+        'next_seed': next_seed,
+        'progress': progress,
+        'recommendations_count': recommendations_count,
+        'feedbacks_count': feedbacks_count,
     })
 
 
