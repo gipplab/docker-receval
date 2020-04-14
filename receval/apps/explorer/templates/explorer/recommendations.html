@@ -27,17 +27,19 @@
             </div>
             <div class="clear"></div>
             <div class="classification">
+
                 <h5>MSC:</h5>
                 <table>
                     <tbody>
-                    <tr>
-                        <td>
-                            <a class="mono" href="{{ experiment.base_url }}/classification/?q=cc%3{{ seed.data.classification }}" title="" data-original-title="MSC2020">{{ seed.data.classification }}</a>
-                        </td>
-                        <td class="space">
-
-                        </td>
-                    </tr>
+                    {%  with classifications=seed.data.classification|split:" " %}
+                        {% for cls in classifications %}
+                            <tr>
+                                <td>
+                                    <a class="mono" href="{{ experiment.base_url }}/?q=cc:{{ cls }}" title="" data-original-title="">{{ cls }}</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {%  endwith %}
                     </tbody>
                 </table>
             </div>

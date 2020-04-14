@@ -62,3 +62,9 @@ def jsonify(object):
     if isinstance(object, QuerySet):
         return serialize('json', object)
     return json.dumps(object)
+
+
+@register.filter()
+def split(value, key=' '):
+    """Returns the value turned into a list."""
+    return value.split(key)
