@@ -7,6 +7,7 @@ from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse
 from gensim.models import KeyedVectors
+from smart_open import open
 from whoosh import index
 from whoosh.analysis import StemmingAnalyzer
 from whoosh.fields import Schema, TEXT, KEYWORD, ID
