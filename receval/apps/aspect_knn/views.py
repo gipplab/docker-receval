@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import random
 
@@ -12,6 +13,8 @@ from whoosh import index
 from whoosh.analysis import StemmingAnalyzer
 from whoosh.fields import Schema, TEXT, KEYWORD, ID
 from whoosh.qparser import QueryParser
+
+logger = logging.getLogger(__name__)
 
 
 class Paper(object):
@@ -65,10 +68,10 @@ else:
 
 
 # Load vector models
-generic_vecs = KeyedVectors.load_word2vec_format(settings.ASPECT_KNN_GENERIC_W2V_PATH) if settings.ASPECT_KNN_GENERIC_W2V_PATH and os.path.exists(settings.ASPECT_KNN_GENERIC_W2V_PATH) else None #  '/Users/maos01/Downloads/specter.1k.w2v.txt'
-task_vecs = KeyedVectors.load_word2vec_format(settings.ASPECT_KNN_TASK_W2V_PATH) if settings.ASPECT_KNN_TASK_W2V_PATH and os.path.exists(settings.ASPECT_KNN_TASK_W2V_PATH) else None
-method_vecs = KeyedVectors.load_word2vec_format(settings.ASPECT_KNN_METHOD_W2V_PATH) if settings.ASPECT_KNN_METHOD_W2V_PATH and os.path.exists(settings.ASPECT_KNN_METHOD_W2V_PATH) else None
-dataset_vecs = KeyedVectors.load_word2vec_format(settings.ASPECT_KNN_DATASET_W2V_PATH) if settings.ASPECT_KNN_DATASET_W2V_PATH and os.path.exists(settings.ASPECT_KNN_DATASET_W2V_PATH) else None
+generic_vecs = KeyedVectors.load_word2vec_format(settings.ASPECT_KNN_GENERIC_W2V_PATH, limit=settings.ASPECT_KNN_LIMIT) if settings.ASPECT_KNN_GENERIC_W2V_PATH and os.path.exists(settings.ASPECT_KNN_GENERIC_W2V_PATH) else None #  '/Users/maos01/Downloads/specter.1k.w2v.txt'
+task_vecs = KeyedVectors.load_word2vec_format(settings.ASPECT_KNN_TASK_W2V_PATH, limit=settings.ASPECT_KNN_LIMIT) if settings.ASPECT_KNN_TASK_W2V_PATH and os.path.exists(settings.ASPECT_KNN_TASK_W2V_PATH) else None
+method_vecs = KeyedVectors.load_word2vec_format(settings.ASPECT_KNN_METHOD_W2V_PATH, limit=settings.ASPECT_KNN_LIMIT) if settings.ASPECT_KNN_METHOD_W2V_PATH and os.path.exists(settings.ASPECT_KNN_METHOD_W2V_PATH) else None
+dataset_vecs = KeyedVectors.load_word2vec_format(settings.ASPECT_KNN_DATASET_W2V_PATH, limit=settings.ASPECT_KNN_LIMIT) if settings.ASPECT_KNN_DATASET_W2V_PATH and os.path.exists(settings.ASPECT_KNN_DATASET_W2V_PATH) else None
 
 
 # Normalize vectors
@@ -102,13 +105,19 @@ def view_recommendations(request):
         generic_recommendations = [paper_id2paper[pid].set_rank(rank) for pid, rank in
                                    generic_vecs.most_similar(seed_id, topn=settings.RECOMMENDATIONS_TOP_K)]
         task_recommendations = [paper_id2paper[pid].set_rank(rank) for pid, rank in
-                                   generic_vecs.most_similar(seed_id, topn=settings.RECOMMENDATIONS_TOP_K)]
+                                   task_vecs.most_similar(seed_id, topn=settings.RECOMMENDATIONS_TOP_K)]
         method_recommendations = [paper_id2paper[pid].set_rank(rank) for pid, rank in
-                                   generic_vecs.most_similar(seed_id, topn=settings.RECOMMENDATIONS_TOP_K)]
+                                   method_vecs.most_similar(seed_id, topn=settings.RECOMMENDATIONS_TOP_K)]
         dataset_recommendations = [paper_id2paper[pid].set_rank(rank) for pid, rank in
-                                   generic_vecs.most_similar(seed_id, topn=settings.RECOMMENDATIONS_TOP_K)]
+                                   dataset_vecs.most_similar(seed_id, topn=settings.RECOMMENDATIONS_TOP_K)]
     except KeyError:
         raise Http404('No recommendations can available for this paper')
+
+    logger.info(f'generic_recommendations: {len(generic_recommendations)}')
+    logger.info(f'task_recommendations: {len(task_recommendations)}')
+    logger.info(f'method_recommendations: {len(method_recommendations)}')
+    logger.info(f'dataset_recommendations: {len(dataset_recommendations)}')
+    logger.info(f'RECOMMENDATIONS_TOP_K: {settings.RECOMMENDATIONS_TOP_K}')
 
     return render(request, 'aspect_knn/recommendations.html', {
         'title': seed.get_title() + ' - Recommendations',
@@ -123,6 +132,8 @@ def view_recommendations(request):
 def view_search(request):
     q = request.GET.get('q', None)  # type: str
     items = []
+
+    logger.info('Search query: %s' % q)
 
     if q and len(q) > 3:
         if not ix:

@@ -30,5 +30,5 @@ EXPOSE 8000
 # define the default command to run when starting the container
 # gunicorn --bind 0.0.0.0:8000 oldp.wsgi:application
 # " --log-file", "-", "--log-level", "debug",
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "receval.wsgi:application"]
+CMD ["gunicorn", "--workers", "1", "--bind", "0.0.0.0:8000", "--timeout", "1000", "receval.wsgi:application"]
 

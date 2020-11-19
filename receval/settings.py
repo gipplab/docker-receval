@@ -278,6 +278,7 @@ class Base(Configuration):
     ASPECT_KNN_METHOD_W2V_PATH = values.Value()
     ASPECT_KNN_DATASET_W2V_PATH = values.Value()
     ASPECT_KNN_WHOOSH_INDEX_PATH = values.Value()
+    ASPECT_KNN_LIMIT = values.IntegerValue(None)
 
 
 class Dev(Base):
