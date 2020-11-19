@@ -21,3 +21,7 @@ gunicorn
 sqlalchemy
 psycopg2
 pandas
+
+# aspect-knn
+Whoosh==2.7.4
+gensim==3.8.3

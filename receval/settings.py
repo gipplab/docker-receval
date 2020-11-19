@@ -6,13 +6,13 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import dj_database_url
-
 from configurations import Configuration, importer, values
 from configurations import importer
 from django.contrib.messages import constants as message_constants
 from django.utils.translation import ugettext_lazy as _
 
 importer.install()
+
 
 class Base(Configuration):
     SITE_NAME = values.Value('receval')
@@ -47,6 +47,7 @@ class Base(Configuration):
     INSTALLED_APPS = [
         'receval.apps.explorer.apps.ExplorerConfig',
         'receval.apps.accounts.apps.AccountsConfig',
+        'receval.apps.aspect_knn.apps.AspectKNNConfig',
 
         # third-party
         'allauth',
@@ -269,6 +270,14 @@ class Base(Configuration):
     ZBMATH_SSL_CERT = values.Value()
     ZBMATH_SSL_KEY = values.Value()
     ZBMATH_SSL_ROOTCERT = values.Value()
+
+    # Aspect kNN
+    ASPECT_KNN_DOCS_PATH = values.Value()
+    ASPECT_KNN_GENERIC_W2V_PATH = values.Value()
+    ASPECT_KNN_TASK_W2V_PATH = values.Value()
+    ASPECT_KNN_METHOD_W2V_PATH = values.Value()
+    ASPECT_KNN_DATASET_W2V_PATH = values.Value()
+    ASPECT_KNN_WHOOSH_INDEX_PATH = values.Value()
 
 
 class Dev(Base):

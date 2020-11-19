@@ -76,6 +76,13 @@ docker tag receval aggipp/receval:latest
 
 # Push to hub
 docker push aggipp/receval:latest
+
+
+## Custom
+docker tag receval malteos/receval:latest
+docker push malteos/receval:latest
+
+
 ```
 
 For development, running `docker-compose` is recommended:
@@ -144,6 +151,25 @@ Feedback
 - is_relevant (true/false/null)
 - comment (text)
 
+```
+
+## Aspect k-Nearest Neighbors
+
+- Whoosh index
+- w2v.txt files: SPECTER + Sentence-SciBERT (task,method,datset)
+
+Optional:
+- Semantic Scholar API for retrieval of new docs
+- Code: SPECTER + Sentence Transformers for embedding of new docs
+
+```bash
+# env
+DJANGO_ASPECT_KNN_DOCS_PATH
+DJANGO_ASPECT_KNN_GENERIC_W2V_PATH
+DJANGO_ASPECT_KNN_TASK_W2V_PATH
+DJANGO_ASPECT_KNN_METHOD_W2V_PATH
+DJANGO_ASPECT_KNN_DATASET_W2V_PATH
+DJANGO_ASPECT_KNN_WHOOSH_INDEX_PATH
 ```
 
 ## License

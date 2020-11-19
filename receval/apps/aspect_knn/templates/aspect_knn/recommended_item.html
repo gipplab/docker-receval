@@ -1,0 +1,43 @@
+
+<div class="flex-item similar-papers__card" id="recommendation{{ rec.pk }}">
+    <div class="similar-papers-card__fold"></div>
+    <div class="similar-papers__metadata-top">
+{#        <ul class="similar-papers__metadata-top__list">#}
+{#            <li>Published in <span class="" data-selenium-selector="venue-metadata"><span>{{ item.proceedings }}</span></span>#}
+{#            </li>#}
+{#        </ul>#}
+    </div>
+    <div class="similar_papers__link">
+        <a data-selenium-selector="title-link" href="{{ item.get_absolute_url }}">
+            {{ item.get_title }}
+        </a></div>
+    <div class="similar-papers__metadata">
+        <span class="author-list">
+            {%  with authors=item.authors %}
+                {% for a in authors %}
+                    <span data-heap-id="" data-heap-author-id="">
+                        <a
+                    class="author-list__link author-list__author-name"
+                    href="#"><span class=""><span>{{ a }}</span></span></a>,
+                    </span>
+                {% endfor %}
+            {% endwith %}
+        </span>
+    </div>
+    <div class="similar-papers__abstract">
+        {{ item.abstract|truncatewords:25 }}
+    </div>
+    <div class="similar-papers__footer"><span class="similar-papers__footer-left"><span
+            class="similar-papers__footer-text">
+{#            {% if rec.recommended_item.data.citation_count %}#}
+{#                <span class="similar-papers__footer-counts">{{ item.citation_count }}</span> Citations#}
+{#            {% else %}#}
+{#                No citation data available.#}
+{#            {% endif %}#}
+            </span>
+        </span>
+        <div class="similar-papers__footer-right">
+
+        </div>
+    </div>
+</div>

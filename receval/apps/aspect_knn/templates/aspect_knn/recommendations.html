@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% load static %}
+{% load string_filters %}
+{% block content %}
+
+
+    {% include 'explorer/nav.html' %}
+
+    {% if seed %}
+
+        <article>
+            <div class="author">
+                {%  with authors=seed.authors %}
+                    {% for a in authors %}
+                        {{ a }},
+                    {% endfor %}
+                {% endwith %}
+
+            </div>
+
+            <div class="title">
+                <a href="{{ seed.url_abs }}">{{ seed.title }}</a>
+                <a class="label" href="{{seed.url_pdf }}" data-original-title="" title="">PDF</a>
+                <a class="label" href="{{seed.paper_url }}" data-original-title="" title="">Papers with Code</a>
+            </div>
+                {% if seed.proceeding %}
+                <div class="source">
+                    <span title="" data-original-title="Journal Profile">{{ seed.proceeding }}</span>
+                </div>
+            {% endif %}
+            <div class="abstract">{{ seed.abstract }}
+            </div>
+            <div class="clear"></div>
+            <div class="functions clearfix">
+                <div class="sfx" style="float: right;">
+                </div>
+            </div>
+
+        </article>
+
+        <div>
+            <h2 style="font-size: 18px;">Recommendations</h2>
+            {% if not generic_recommendations and not task_recommendations and not method_recommendations and not dataset_recommendations %}
+                <div class="alert alert-warning">No recommendations available for the selected item.
+                    Click <a href="{% url 'recommendations' %}">here</a> for a random seed item.</div>
+            {% endif %}
+
+            <div class="similar-papers__sets-container">
+                <div class="similar-papers__set">
+                    <h3>Generic relatedness</h3>
+
+                    {% for item in generic_recommendations %}
+                        {% include 'aspect_knn/recommended_item.html' %}
+                    {% endfor %}
+                </div>
+
+                <div class="similar-papers__set">
+                    <h3>Task-related</h3>
+                    {% for item in task_recommendations %}
+                        {% include 'aspect_knn/recommended_item.html' %}
+                    {% endfor %}
+                </div>
+
+                <div class="similar-papers__set">
+                    <h3>Method-related</h3>
+                    {% for item in method_recommendations %}
+                        {% include 'aspect_knn/recommended_item.html' %}
+                    {% endfor %}
+                </div>
+
+                <div class="similar-papers__set">
+                    <h3>Dataset-related</h3>
+                    {% for item in dataset_recommendations %}
+                        {% include 'aspect_knn/recommended_item.html' %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+
+        <div class="alert alert-warning">No seed available.</div>
+
+    {% endif %}
+
+    {% include 'explorer/nav.html' %}
+
+{% endblock %}

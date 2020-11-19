@@ -13,9 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.conf import settings
 
 # Error handlers
 handler500 = 'receval.apps.explorer.views_errors.view_error500'
@@ -28,7 +28,9 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('receval.apps.accounts.urls')),
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^', include('receval.apps.explorer.urls')),
+    url(r'^explorer/', include('receval.apps.explorer.urls')),
+    url(r'', include('receval.apps.aspect_knn.urls')),
+
 ]
 
 # DEBUG only views
