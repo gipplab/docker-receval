@@ -5,7 +5,7 @@ dj-database-url
 mysqlclient
 whitenoise
 django-stronghold==0.4.0
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 django-configurations==2.2
 django-extensions
 django-debug-toolbar
