@@ -43,6 +43,7 @@ class Base(Configuration):
     ALLOWED_HOSTS = values.ListValue(['*'])
 
     # Application definition
+    # Messages authentications were skipped during testing
 
     INSTALLED_APPS = [
         'receval.apps.explorer.apps.ExplorerConfig',
