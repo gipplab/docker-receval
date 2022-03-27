@@ -148,7 +148,7 @@ def view_search(request):
                 items.append(paper_id2paper[r['paper_id']])
 
     # random
-    if len(paper_id2paper) > 10:
+    if len(paper_id2paper) > 0:
         random_items = [paper_id2paper[pid] for pid in random.sample(paper_id2paper.keys(), 10)]
     else:
         random_items = []

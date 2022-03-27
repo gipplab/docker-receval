@@ -114,7 +114,7 @@
                             </span>
                         </span>
                         <div class="similar-papers__footer-right">
-                            <form class="rating-form" method="post" action="/feedback/rating" style="padding: 3px;">
+                            <form class="rating-form" method="post" action="/feedback" style="padding: 3px;">
                                 {% csrf_token %}
                                 <input type="hidden" name="recommendation_pk" value="{{ rec.pk }}">
                                 <input type="hidden" name="is_relevant" value="{{ feedback.is_relevant }}">
@@ -140,7 +140,7 @@
                     </div>
                         <div>
 
-                            <form class="comment-form" method="post" action="/feedback/comment" style="display: none">
+                            <form class="comment-form" method="post" action="/feedback" style="display: none">
                                 {% csrf_token %}
                                 <input type="hidden" name="recommendation_pk" value="{{ rec.pk }}">
 

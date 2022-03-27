@@ -1,5 +1,7 @@
 import logging
 import os
+import random
+import sys
 
 import pandas as pd
 from django.core.management import BaseCommand
@@ -19,6 +21,7 @@ Ut felis eros, imperdiet eu ligula id, porta lobortis nisi.
 Sed pellentesque dui sit amet tortor scelerisque, in tincidunt purus aliquet. 
 Phasellus et tempor risus, sit amet malesuada arcu. 
 Proin vitae dui tincidunt, venenatis purus ac, luctus tortor.'''
+zbl_ids1 = ['0532.33006','1040.11074','0665.33008','1173.33305']
 
 
 class Command(BaseCommand):
@@ -56,12 +59,17 @@ class Command(BaseCommand):
 
             for zbl_id in zbl_ids:
                 item, created = Item.objects.get_or_create(experiment=exp, external_id=zbl_id)
-                item.data = manager.get_item_data(zbl_id=zbl_id)
-                item.title = item.data['title']
+                #item.data = manager.get_item_data(zbl_id=zbl_id)
+                item.title = LIPSUM_TEXT
                 item.save()
 
                 print(f'Saved: {item}')
         else:
+            #read CVS for main data
+            mFP = "data/main_data.csv"
+            df_main_csv = pd.read_csv(mFP)
+            #print(df_main_csv)
+            #sys.exit(0)
             # read from CSV
             fp = options['input']
 
@@ -79,6 +87,7 @@ class Command(BaseCommand):
             # seed_id, recommendation_id, rank_id, score
 
             unique_item_ids = set(df['seed_id'].values.tolist() + df['recommendation_id'].values.tolist())
+            logger.info(unique_item_ids)
 
             logger.info(f'Adding {len(unique_item_ids)} unique items to db')
 
@@ -89,13 +98,24 @@ class Command(BaseCommand):
 
             # Add items for all recs
             for doc_id in tqdm(unique_item_ids, total=len(unique_item_ids)):
+                #print("Here is something i want> ",doc_id)
+
                 try:
-                    data = manager.get_item_data(doc_id=doc_id)
+                    for index,row in df_main_csv.iterrows():
+                        dict_currow = row.to_dict()
+                        if doc_id == dict_currow["id"]:
+                            data = dict_currow
+                            break
+
+
+                    #data = manager.get_item_data(doc_id=doc_id)
+                    #data = {'title':'I do not know','text':LIPSUM_TEXT,'id':random.choice(zbl_ids1),'zbl_id':random.choice(zbl_ids1),'citation_count':5}
 
                     if options['lipsum']:
                         data['text'] = LIPSUM_TEXT
 
                     external_id = data['zbl_id']
+                    #external_id = 932.5220324
 
                     if not external_id:
                         raise ValueError(f'External ID not set for doc #{doc_id}')
@@ -106,6 +126,7 @@ class Command(BaseCommand):
                         # Ensure that title has correct length
                         item.title = data['title'][:Item._meta.get_field('title').max_length-1]
 
+                    logger.info(data)
                     try:
                         item.save()
 

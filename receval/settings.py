@@ -127,7 +127,9 @@ class Base(Configuration):
         # `allauth` specific authentication methods, such as login by e-mail
         'allauth.account.auth_backends.AuthenticationBackend',
     )
-    LOGIN_REDIRECT_URL = '/accounts/email/'
+    #LOGIN_REDIRECT_URL = '/accounts/email/'
+    #redirected to main page instead of profile
+    LOGIN_REDIRECT_URL = '/'
     ACCOUNT_EMAIL_REQUIRED = True
     ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
     ACCOUNT_USERNAME_BLACKLIST = ['admin', 'oldp', 'openlegaldata']
@@ -160,12 +162,18 @@ class Base(Configuration):
     # Database
     # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
     DATABASES = {
-        'default': {},
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost:8000'
+        }
     }
 
     # Update database configuration with $DATABASE_URL.
     db_from_env = dj_database_url.config(conn_max_age=500, default='sqlite:///db.sqlite3')
-    DATABASES['default'].update(db_from_env)
+    #DATABASES['default'].update(db_from_env)
     #DATABASES['default']['TEST'] = {'NAME': DATABASES['default']['NAME']}
 
     # Domain for Wikipedia endpoint

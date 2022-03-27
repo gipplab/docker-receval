@@ -216,6 +216,7 @@ def view_recommendations(request):
         recs = Recommendation.objects.filter(experiment=exp, seed_item=seed_item).order_by('rank')
 
         # limit to top k
+        #limited recommendations, hence set to 0
         if settings.RECOMMENDATIONS_TOP_K > 0:
             recs = recs[:settings.RECOMMENDATIONS_TOP_K]
 
@@ -281,7 +282,7 @@ def view_search(request):
             items = Item.objects.filter(id=q)
         elif zbl_id_pattern.search(q):
             items = Item.objects.filter(external_id=q)
-
+ 
         else:
             # keyword search
             items = Item.objects.filter(title__contains=q, seed_item__isnull=False).distinct()[:100]
@@ -290,7 +291,8 @@ def view_search(request):
         items = []
 
     # Random items
-    random_items = Item.objects.filter(seed_item__isnull=False).select_related('experiment').order_by('?').distinct()[:100]
+    # order_by('?') changed to order_by('title') because randomenss was removed 
+    random_items = Item.objects.filter(seed_item__isnull=False).select_related('experiment').order_by('title').distinct()[:2]
 
     return render(request, 'explorer/search.html', {
         'title': 'Search',

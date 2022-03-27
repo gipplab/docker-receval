@@ -23,13 +23,15 @@ handler404 = 'receval.apps.explorer.views_errors.view_error404'
 handler403 = 'receval.apps.explorer.views_errors.view_error_permission_denied'
 handler400 = 'receval.apps.explorer.views_errors.view_error_bad_request'
 
-
+#Changed default URL from aspect_knn to explorer(for zbMATH recomm.)
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('receval.apps.accounts.urls')),
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^explorer/', include('receval.apps.explorer.urls')),
-    url(r'', include('receval.apps.aspect_knn.urls')),
+    url(r'^aspect_knn/', include('receval.apps.aspect_knn.urls')),
+    url(r'^', include('receval.apps.explorer.urls')),
+    #url(r'^explorer/', include('receval.apps.explorer.urls')),
+    #url(r'', include('receval.apps.aspect_knn.urls')),
 
 ]
 

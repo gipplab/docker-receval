@@ -20,6 +20,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        #Tried= "zbmath" and worked
         exp = Experiment.objects.get(name=options['experiment'])
         # exp = Experiment.objects.get(name='zbmath')
 
