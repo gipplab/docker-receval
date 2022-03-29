@@ -1,6 +1,6 @@
 # Docker data
 docker/data
-data/
+#data/
 
 docs/*
 
